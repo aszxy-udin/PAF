@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>KaiJuBlox - Roblox Account Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#020617;--panel:#050816;--primary:#2563eb;--primary-soft:#1d4ed8;
+      --accent:#38bdf8;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;
+      --success:#22c55e;--danger:#ef4444;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{background:radial-gradient(circle at top,#1e3a8a 0,var(--bg) 55%,var(--bg) 100%);color:var(--text);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+    header{position:sticky;top:0;z-index:20;background:rgba(3,7,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(37,99,235,.4);}
+    .nav-inner{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .logo-wrap{display:flex;align-items:center;gap:10px;}
+    .logo-badge{width:38px;height:38px;border-radius:14px;background:radial-gradient(circle at 20% 20%,#60a5fa,#1d4ed8);box-shadow:0 0 0 2px #020617,0 0 30px rgba(37,99,235,.9);position:relative;overflow:hidden;}
+    .logo-badge::before{content:"";position:absolute;inset:18%;background:#e5e7eb;transform:skewX(-15deg) rotate(-8deg);border-radius:6px;}
+    .logo-main{font-size:.95rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+    .logo-sub{font-size:.7rem;color:var(--accent);}
+    .nav-cta{display:flex;align-items:center;gap:8px;}
+    .nav-pill{font-size:.75rem;padding:4px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.9);background:rgba(15,23,42,.96);color:var(--muted);display:flex;align-items:center;gap:6px;}
+    .nav-btn{padding:7px 12px;border-radius:999px;border:none;background:linear-gradient(to right,var(--primary),var(--primary-soft));color:#eff6ff;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 14px 30px rgba(37,99,235,.9);}
+    .wrapper{max-width:1080px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px;}
+    .hero{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-top:4px;}
+    @media(max-width:900px){.hero{grid-template-columns:1fr;}}
+    .hero-main{background:radial-gradient(circle at top left,rgba(37,99,235,.6),transparent 60%),radial-gradient(circle at bottom right,rgba(8,47,73,.9),#020617);border-radius:24px;padding:16px 16px 14px;border:1px solid rgba(37,99,235,.8);box-shadow:0 18px 40px rgba(15,23,42,.9);}
+    .hero-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;background:rgba(15,23,42,.9);border:1px solid rgba(191,219,254,.5);font-size:.75rem;margin-bottom:8px;}
+    .hero-title{font-size:1.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+    .hero-title span{color:var(--accent);}
+    .hero-sub{font-size:.85rem;color:#d1d5db;max-width:420px;margin-bottom:12px;}
+    .hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+    .chip{font-size:.72rem;padding:4px 9px;border-radius:999px;border:1px solid rgba(148,163,184,.9);background:rgba(15,23,42,.95);display:flex;align-items:center;gap:6px;}
+    .chip-dot{width:7px;height:7px;border-radius:999px;background:var(--success);box-shadow:0 0 0 4px rgba(34,197,94,.35);}
+    .hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;}
+    .btn-primary{padding:7px 12px;border-radius:999px;border:none;background:linear-gradient(to right,var(--primary),var(--primary-soft));color:#f9fafb;font-size:.82rem;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;box-shadow:0 16px 36px rgba(37,99,235,.95);}
+    .hero-note{font-size:.78rem;color:#cbd5f5;display:flex;align-items:center;gap:6px;margin-top:6px;}
+    .hero-note-dot{width:16px;height:16px;border-radius:999px;border:1px solid rgba(34,197,94,.8);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#bbf7d0;}
+    .hero-meta{text-align:right;font-size:.75rem;color:#cbd5f5;}
+    .hero-side{display:flex;flex-direction:column;gap:10px;}
+    .stat-card{border-radius:18px;background:rgba(15,23,42,.96);border:1px solid var(--border);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;}
+    .stat-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;}
+    .stat-value{font-size:1rem;font-weight:700;}
+    .stat-badge{font-size:.7rem;padding:4px 8px;border-radius:999px;border:1px solid rgba(34,197,94,.7);color:#bbf7d0;display:flex;align-items:center;gap:4px;}
+    .stat-mini-row{display:flex;gap:8px;}
+    .stat-mini{flex:1;border-radius:16px;background:linear-gradient(to bottom right,rgba(37,99,235,.18),rgba(15,23,42,.98));border:1px solid rgba(30,64,175,.9);padding:8px 9px;font-size:.74rem;display:flex;flex-direction:column;gap:2px;}
+    .stat-mini span:first-child{color:var(--muted);font-size:.68rem;}
+    .filter-card{border-radius:18px;background:rgba(15,23,42,.98);border:1px solid var(--border);padding:10px 12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 18px 36px rgba(15,23,42,.9);}
+    .filter-main{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+    .filter-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+    .filter-chips{display:flex;flex-wrap:wrap;gap:6px;}
+    .filter-chip{font-size:.74rem;padding:4px 9px;border-radius:999px;border:1px solid var(--border);background:rgba(17,24,39,.96);color:var(--text);display:flex;align-items:center;gap:5px;cursor:pointer;}
+    .filter-chip.active{background:rgba(37,99,235,.3);border-color:var(--primary);box-shadow:0 0 0 1px rgba(59,130,246,.8);}
+    .filter-search{min-width:190px;display:flex;align-items:center;gap:6px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);padding:4px 9px;}
+    .filter-search input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:.8rem;}
+    .filter-search input::placeholder{color:#6b7280;}
+    @media(max-width:640px){.nav-cta{display:none;}.filter-card{align-items:flex-start;}.filter-search{width:100%;}.hero{margin-top:8px;}}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-top:8px;margin-bottom:6px;}
+    .section-title{font-size:.9rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);}
+    .section-sub{font-size:.78rem;color:#6b7280;}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media(max-width:640px){.grid{grid-template-columns:1fr;}}
+    .card{background:radial-gradient(circle at top left,rgba(59,130,246,.18),transparent),rgba(15,23,42,.98);border-radius:18px;border:1px solid var(--border);padding:10px 10px 9px;display:flex;flex-direction:column;gap:6px;box-shadow:0 14px 30px rgba(15,23,42,.9);position:relative;overflow:hidden;}
+    .card.sold{opacity:.75;filter:grayscale(.25);}
+    .ribbon{position:absolute;top:8px;right:-30px;transform:rotate(38deg);background:linear-gradient(to right,#22c55e,#16a34a);color:#ecfdf5;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;padding:3px 34px;box-shadow:0 10px 28px rgba(22,163,74,.8);}
+    .ribbon-sold{background:linear-gradient(to right,#ef4444,#b91c1c);}
+    .header-row{display:flex;gap:8px;align-items:center;}
+    .avatar{width:40px;height:40px;border-radius:14px;border:1px solid rgba(148,163,184,.9);background:radial-gradient(circle at 30% 20%,#facc15,#b91c1c);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fef3c7;font-size:1.1rem;}
+    .acc-main{flex:1;min-width:0;}
+    .acc-name{font-size:.92rem;font-weight:700;margin-bottom:2px;}
+    .acc-tagline{font-size:.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .price{font-size:.9rem;font-weight:700;color:#facc15;text-align:right;}
+    .price span{display:block;font-size:.72rem;color:var(--muted);}
+    .pill-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;font-size:.7rem;margin-top:2px;}
+    .pill{padding:4px 6px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);display:flex;justify-content:space-between;align-items:center;}
+    .pill-label{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+    .pill-value{font-weight:600;font-size:.74rem;}
+    .pill-value-sold{color:#fecaca;font-weight:600;font-size:.74rem;}
+    .status-dot{width:8px;height:8px;border-radius:999px;background:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,.35);margin-right:4px;}
+    .status-dot.sold{background:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.35);}
+    .footer-row{display:flex;justify-content:space-between;align-items:center;margin-top:4px;gap:6px;}
+    .badge-row{display:flex;flex-wrap:wrap;gap:4px;font-size:.68rem;}
+    .badge{padding:2px 6px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--muted);}
+    .btn-ghost,.btn-buy{padding:5px 8px;border-radius:999px;font-size:.75rem;display:inline-flex;align-items:center;gap:5px;cursor:pointer;}
+    .btn-ghost{border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--text);}
+    .btn-buy{border:none;background:linear-gradient(to right,var(--primary),var(--primary-soft));color:#eff6ff;box-shadow:0 10px 24px rgba(37,99,235,.85);}
+    .empty{margin-top:8px;border-radius:16px;border:1px dashed var(--border);background:rgba(15,23,42,.96);padding:18px 14px;text-align:center;font-size:.8rem;color:var(--muted);}
+    .empty strong{display:block;margin-bottom:4px;color:var(--text);}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.9);display:none;align-items:center;justify-content:center;z-index:40;}
+    .modal{background:rgba(15,23,42,.98);border-radius:20px;border:1px solid rgba(37,99,235,.8);max-width:380px;width:100%;padding:16px 18px 14px;box-shadow:0 24px 60px rgba(15,23,42,.95);}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .modal-title{font-size:.95rem;font-weight:700;}
+    .modal-close{border:none;background:transparent;color:var(--muted);font-size:1.1rem;cursor:pointer;}
+    .modal-body{font-size:.8rem;color:#d1d5db;display:flex;flex-direction:column;gap:10px;}
+    .qris-wrap{border-radius:16px;border:1px solid var(--border);background:rgba(15,23,42,.96);padding:10px;text-align:center;}
+    .qris-wrap img{max-width:100%;border-radius:12px;}
+    .modal-footer{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
+    .btn-main{padding:7px 12px;border-radius:999px;border:none;background:linear-gradient(to right,#22c55e,#16a34a);color:#ecfdf5;font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 14px 34px rgba(22,163,74,.9);}
+    .btn-sec{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--text);font-size:.78rem;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <div class="logo-badge"></div>
+      <div>
+        <div class="logo-main">KAIJUBLOX</div>
+        <div class="logo-sub">Kaisen Juragan Roblox</div>
+      </div>
+    </div>
+    <div class="nav-cta">
+      <div class="nav-pill"><span>🧊</span>Verified account seller</div>
+      <button class="nav-btn" onclick="location.href='/admin'">Panel Admin ⚙️</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrapper">
+  <section class="hero">
+    <div class="hero-main">
+      <div class="hero-pill">🎮 Stok akun Roblox siap dipakai</div>
+      <h1 class="hero-title">Pilih akun <span>Roblox</span> tanpa ribet chat panjang.</h1>
+      <p class="hero-sub">Cari akun sesuai budget dan gaya main lo. Cukup pilih, bayar via QRIS, lanjut kirim bukti ke WhatsApp.</p>
+      <div class="hero-tags">
+        <div class="chip"><div class="chip-dot"></div><span>Ready 24/7 (selama stok ada)</span></div>
+        <div class="chip"><strong>Gamepass</strong><span>Anime, sim, limited, dll</span></div>
+        <div class="chip"><strong>Garansi login</strong><span>sesuai deskripsi akun</span></div>
+      </div>
+      <div class="hero-bottom">
+        <div>
+          <button class="btn-primary" onclick="scrollToList()">Lihat stok akun 👇</button>
+          <div class="hero-note">
+            <div class="hero-note-dot">✓</div>
+            <span>Sistem simple: pilih akun, catat kode, bayar, lalu kirim bukti ke WhatsApp.</span>
+          </div>
+        </div>
+        <div class="hero-meta">
+          <div>Last update stok</div>
+          <div id="lastUpdate">-</div>
+          <div id="totalAkun">0 akun</div>
+        </div>
+      </div>
+    </div>
+    <aside class="hero-side">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Total listing</div>
+          <div class="stat-value" id="statStok">0 akun</div>
+        </div>
+        <div class="stat-badge">⚡ Fast respond</div>
+      </div>
+      <div class="stat-mini-row">
+        <div class="stat-mini">
+          <span>Start from</span>
+          <span id="statTermurah">Rp -</span>
+        </div>
+        <div class="stat-mini">
+          <span>Jenis akun</span>
+          <span id="statJenis">-</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="filter-card">
+    <div class="filter-main">
+      <div class="filter-title">Filter stok</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="all"><span>✨</span>Semua</button>
+        <button class="filter-chip" data-filter="anime"><span>🌀</span>Anime</button>
+        <button class="filter-chip" data-filter="simulator"><span>🧪</span>Simulator</button>
+        <button class="filter-chip" data-filter="limited"><span>💎</span>Limited / rare</button>
+      </div>
+    </div>
+    <div class="filter-search">
+      <span>🔎</span>
+      <input id="searchInput" type="text" placeholder="Cari kode / judul / catatan...">
+    </div>
+  </section>
+
+  <section id="listSection">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Stok akun KaiJuBlox</div>
+        <div class="section-sub">Pilih akun, klik BUY, bayar via QRIS, lalu lanjut WA.</div>
+      </div>
+      <div class="section-sub" id="filterInfo">Menampilkan semua kategori</div>
+    </div>
+    <div class="grid" id="accountGrid"></div>
+    <div class="empty" id="emptyState" style="display:none;">
+      <strong>Belum ada stok yang cocok filter.</strong>
+      Coba reset filter atau cek lagi nanti, stok bakal rutin di-update.
+    </div>
+  </section>
+</main>
+
+<div class="modal-backdrop" id="qrisModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Bayar via QRIS</div>
+      <button class="modal-close" onclick="closeQrisModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalAccountInfo"></div>
+      <div class="qris-wrap">
+        <img src="qris-kaijublox.png" alt="QRIS KaiJuBlox">
+      </div>
+      <div>
+        <strong>Langkah:</strong>
+        <ol style="margin-left:18px;margin-top:4px;">
+          <li>Scan QRIS pakai aplikasi bank / e-wallet.</li>
+          <li>Masukkan nominal sesuai harga akun.</li>
+          <li>Setelah transfer, klik tombol hijau di bawah buat lanjut ke WhatsApp.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-main" id="btnWa">🚀 Saya sudah bayar & lanjut ke WhatsApp</button>
+      <button class="btn-sec" onclick="closeQrisModal()">Batal / pilih akun lain</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const WA_NUMBER = "6285189362145";
+  let inventory = [];
+
+  async function fetchInventory() {
+    try {
+      const res = await fetch('/api/accounts');
+      if (!res.ok) throw new Error('failed');
+      inventory = await res.json();
+    } catch (e) {
+      console.error(e);
+      inventory = [];
+    }
+  }
+
+  function formatRupiah(angka) {
+    if (angka === undefined || angka === null || angka === "") return "-";
+    const num = Number(angka);
+    if (Number.isNaN(num)) return angka;
+    return "Rp " + num.toLocaleString("id-ID");
+  }
+
+  function updateStats(list) {
+    const total = list.length;
+    const totalAkunEl = document.getElementById("totalAkun");
+    const statStokEl = document.getElementById("statStok");
+    const statTermurahEl = document.getElementById("statTermurah");
+    const statJenisEl = document.getElementById("statJenis");
+    const lastUpdateEl = document.getElementById("lastUpdate");
+
+    if (totalAkunEl) totalAkunEl.textContent = total + " akun listing";
+    if (statStokEl) statStokEl.textContent = total + " akun";
+
+    const now = new Date();
+    const options = { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" };
+    if (lastUpdateEl) lastUpdateEl.textContent = now.toLocaleString("id-ID", options);
+
+    if (total > 0) {
+      const available = list.filter(a => a.status === "available");
+      const prices = available.map(a => Number(a.harga || 0)).filter(n => !Number.isNaN(n));
+      if (prices.length > 0 && statTermurahEl) {
+        const min = Math.min(...prices);
+        statTermurahEl.textContent = formatRupiah(min);
+      } else if (statTermurahEl) {
+        statTermurahEl.textContent = "Rp -";
+      }
+
+      const categories = new Set(list.map(a => a.kategori || "Umum"));
+      if (statJenisEl) statJenisEl.textContent = Array.from(categories).join(", ");
+    } else {
+      if (statTermurahEl) statTermurahEl.textContent = "Rp -";
+      if (statJenisEl) statJenisEl.textContent = "-";
+    }
+  }
+
+  function createAccountCard(akun) {
+    const div = document.createElement("article");
+    div.className = "card";
+    const isSold = akun.status === "sold";
+    if (isSold) div.classList.add("sold");
+
+    const ribbonText = akun.ribbon || (isSold ? "SOLD" : "");
+    const statusLabel = isSold ? "Sold" : "Ready";
+
+    div.innerHTML = `
+      ${ribbonText ? `<div class="ribbon ${isSold ? "ribbon-sold" : ""}">${ribbonText}</div>` : ""}
+      <div class="header-row">
+        <div class="avatar">${(akun.judul || "K")[0].toUpperCase()}</div>
+        <div class="acc-main">
+          <div class="acc-name">${akun.judul || "Akun Roblox"}</div>
+          <div class="acc-tagline">${akun.catatan || "Detail akun belum diisi"}</div>
+        </div>
+        <div class="price">
+          ${formatRupiah(akun.harga)}
+          <span>kode: ${akun.kode || "-"}</span>
+        </div>
+      </div>
+      <div class="pill-row">
+        <div class="pill">
+          <span class="pill-label">Level</span>
+          <span class="pill-value">${akun.level || "-"}</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Robux</span>
+          <span class="pill-value">${akun.robux || "0"}</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Tipe</span>
+          <span class="pill-value">${akun.kategori || "-"}</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Status</span>
+          <span class="${isSold ? "pill-value-sold" : "pill-value"}">
+            <span class="status-dot ${isSold ? "sold" : ""}"></span>${statusLabel}
+          </span>
+        </div>
+      </div>
+      <div class="footer-row">
+        <div class="badge-row">
+          ${akun.tag1 ? `<span class="badge">${akun.tag1}</span>` : ""}
+          ${akun.tag2 ? `<span class="badge">${akun.tag2}</span>` : ""}
+          ${akun.tag3 ? `<span class="badge">${akun.tag3}</span>` : ""}
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-ghost" onclick="copyKode('${akun.kode || ""}')">📋 Copy kode</button>
+          ${isSold ? "" : `<button class="btn-buy" onclick="openQrisModal('${akun.kode}', ${akun.harga || 0})">💳 Buy via QRIS</button>`}
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  function renderList() {
+    const grid = document.getElementById("accountGrid");
+    const empty = document.getElementById("emptyState");
+    const search = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
+    const activeFilterChip = document.querySelector(".filter-chip.active");
+    const filter = activeFilterChip ? activeFilterChip.dataset.filter : "all";
+
+    let filtered = [...inventory];
+
+    if (filter !== "all") {
+      filtered = filtered.filter(a => {
+        const cat = (a.kategori || "").toLowerCase();
+        const t1 = (a.tag1 || "").toLowerCase();
+        const t2 = (a.tag2 || "").toLowerCase();
+        const t3 = (a.tag3 || "").toLowerCase();
+        if (filter === "anime") return cat.includes("anime") || t1.includes("anime") || t2.includes("anime") || t3.includes("anime");
+        if (filter === "simulator") return cat.includes("sim") || t1.includes("sim") || t2.includes("sim") || t3.includes("sim");
+        if (filter === "limited") return cat.includes("limited") || t1.includes("limited") || t2.includes("limited") || t3.includes("limited");
+        return true;
+      });
+    }
+
+    if (search) {
+      filtered = filtered.filter(a => {
+        const merged = [a.judul, a.kode, a.catatan, a.kategori, a.tag1, a.tag2, a.tag3]
+          .filter(Boolean).join(" ").toLowerCase();
+        return merged.includes(search);
+      });
+    }
+
+    grid.innerHTML = "";
+    if (filtered.length === 0) {
+      empty.style.display = "block";
+    } else {
+      empty.style.display = "none";
+      filtered.forEach(a => grid.appendChild(createAccountCard(a)));
+    }
+
+    const info = document.getElementById("filterInfo");
+    const map = {
+      all:"Menampilkan semua kategori",
+      anime:"Filter: akun dengan nuansa / gamepass anime",
+      simulator:"Filter: akun fokus game simulator",
+      limited:"Filter: akun limited / rare item"
+    };
+    if (info) info.textContent = map[filter] || "Filter aktif";
+
+    updateStats(inventory);
+  }
+
+  function copyKode(kode) {
+    if (!kode) { alert("Kode akun belum di-set."); return; }
+    navigator.clipboard.writeText(kode).then(()=>{
+      alert("Kode akun disalin: " + kode);
+    }).catch(()=>{
+      alert("Gagal copy. Catat manual: " + kode);
+    });
+  }
+
+  function scrollToList() {
+    document.getElementById("listSection").scrollIntoView({behavior:"smooth"});
+  }
+
+  function openQrisModal(kode, harga) {
+    const modal = document.getElementById("qrisModal");
+    const info = document.getElementById("modalAccountInfo");
+    if (info) {
+      info.innerHTML = `
+        <div><strong>Kode akun:</strong> ${kode}</div>
+        <div><strong>Nominal:</strong> ${formatRupiah(harga)}</div>
+      `;
+    }
+    const btnWa = document.getElementById("btnWa");
+    if (btnWa) {
+      btnWa.onclick = () => {
+        const text = encodeURIComponent(
+          `Halo, saya sudah bayar akun Roblox dengan kode: ${kode} dengan nominal ${formatRupiah(harga)}. Mohon kirim detail akunnya.`
+        );
+        window.open(`https://wa.me/${WA_NUMBER}?text=${text}`,"_blank");
+      };
+    }
+    modal.style.display = "flex";
+  }
+
+  function closeQrisModal() {
+    document.getElementById("qrisModal").style.display = "none";
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    document.querySelectorAll(".filter-chip").forEach(chip=>{
+      chip.addEventListener("click",()=>{
+        document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active"));
+        chip.classList.add("active");
+        renderList();
+      });
+    });
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) searchInput.addEventListener("input",()=>renderList());
+    await fetchInventory();
+    renderList();
+  });
+</script>
+</body>
+</html>

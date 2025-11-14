@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - KaiJuBlox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#020617;--panel:#050816;--primary:#2563eb;--primary-soft:#1d4ed8;
+      --accent:#38bdf8;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;
+      --danger:#ef4444;--success:#22c55e;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    body{background:radial-gradient(circle at top,#1e3a8a 0,var(--bg) 55%,var(--bg) 100%);color:var(--text);min-height:100vh;}
+    .wrapper{max-width:1040px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px;}
+    .header{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    .header-main{display:flex;align-items:center;gap:10px;}
+    .logo-badge{width:40px;height:40px;border-radius:14px;background:radial-gradient(circle at 25% 20%,#60a5fa,#1d4ed8);box-shadow:0 0 0 2px #020617,0 0 30px rgba(37,99,235,.95);position:relative;overflow:hidden;}
+    .logo-badge::before{content:"";position:absolute;inset:18%;background:#e5e7eb;transform:skewX(-15deg) rotate(-8deg);border-radius:6px;}
+    .header-title{font-size:1rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+    .header-sub{font-size:.72rem;color:var(--muted);}
+    .badge{font-size:.7rem;padding:4px 8px;border-radius:999px;border:1px solid rgba(148,163,184,.9);background:rgba(15,23,42,.96);}
+    .btn{padding:7px 11px;border-radius:999px;border:1px solid rgba(59,130,246,.9);background:linear-gradient(to right,var(--primary),var(--primary-soft));color:#eff6ff;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 14px 30px rgba(37,99,235,.9);}
+    .btn-ghost{padding:7px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--text);font-size:.78rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+    .layout{display:grid;grid-template-columns:1.1fr 1.2fr;gap:16px;align-items:flex-start;}
+    @media(max-width:900px){.layout{grid-template-columns:1fr;}}
+    .card{border-radius:22px;background:rgba(15,23,42,.96);border:1px solid var(--border);box-shadow:0 18px 38px rgba(15,23,42,.95);padding:14px 14px 12px;}
+    .card-header{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;}
+    .card-title{font-size:.86rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);}
+    .card-sub{font-size:.75rem;color:#6b7280;}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:4px;}
+    @media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+    .form-group{display:flex;flex-direction:column;gap:4px;font-size:.78rem;}
+    .form-group.full{grid-column:span 2;}
+    @media(max-width:640px){.form-group.full{grid-column:span 1;}}
+    label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+    label span{color:#f97316;}
+    input,select,textarea{border-radius:12px;border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--text);font-size:.8rem;padding:7px 9px;outline:none;}
+    input::placeholder,textarea::placeholder{color:#6b7280;}
+    textarea{min-height:70px;resize:vertical;}
+    .hint{font-size:.7rem;color:#6b7280;}
+    .form-footer{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+    .pill-info{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:6px;}
+    .pill-info-dot{width:14px;height:14px;border-radius:999px;border:1px solid rgba(34,197,94,.8);display:flex;align-items:center;justify-content:center;font-size:.68rem;color:#bbf7d0;}
+    .btn-wrap{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+    .btn-danger{padding:7px 10px;border-radius:999px;border:1px solid rgba(239,68,68,.8);background:rgba(127,29,29,.15);color:#fecaca;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+    .btn-save{padding:7px 12px;border-radius:999px;border:1px solid rgba(59,130,246,.9);background:linear-gradient(to right,var(--primary),var(--primary-soft));color:#eff6ff;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 16px 34px rgba(37,99,235,.9);}
+    .table-wrap{margin-top:6px;border-radius:16px;border:1px solid var(--border);background:rgba(15,23,42,.96);max-height:420px;display:flex;flex-direction:column;overflow:hidden;}
+    .table-header{background:rgba(15,23,42,1);border-bottom:1px solid var(--border);padding:6px 10px;font-size:.72rem;color:var(--muted);display:grid;grid-template-columns:1.2fr .6fr .6fr .8fr .4fr .5fr;gap:6px;}
+    .table-body{overflow-y:auto;font-size:.76rem;}
+    .row{display:grid;grid-template-columns:1.2fr .6fr .6fr .8fr .4fr .5fr;gap:6px;padding:6px 10px;border-bottom:1px solid rgba(31,41,55,.8);align-items:center;}
+    .row:nth-child(odd){background:rgba(15,23,42,.9);}
+    .row:nth-child(even){background:rgba(15,23,42,.95);}
+    .row strong{display:block;font-weight:600;}
+    .row small{font-size:.7rem;color:var(--muted);}
+    .tag{padding:2px 6px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);font-size:.7rem;}
+    .status-ready{color:#bbf7d0;}
+    .status-sold{color:#fecaca;}
+    .row-actions{display:flex;gap:4px;flex-wrap:wrap;}
+    .btn-mini{padding:3px 6px;border-radius:999px;border:1px solid var(--border);background:rgba(15,23,42,.96);color:var(--text);font-size:.7rem;cursor:pointer;}
+    .empty{padding:18px 12px;text-align:center;font-size:.78rem;color:var(--muted);}
+    .empty strong{display:block;margin-bottom:4px;color:var(--text);}
+    .badge-counter{font-size:.7rem;color:var(--muted);text-align:right;margin-top:4px;}
+    .login-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.9);display:flex;align-items:center;justify-content:center;z-index:40;}
+    .login-card{background:rgba(15,23,42,.98);border-radius:18px;border:1px solid var(--border);padding:16px 18px 14px;max-width:320px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.8);}
+    .login-title{font-size:.95rem;font-weight:700;margin-bottom:4px;}
+    .login-sub{font-size:.75rem;color:var(--muted);margin-bottom:10px;}
+    .login-card .form-group{margin-bottom:8px;}
+    .btn-login{width:100%;justify-content:center;}
+    .login-error{font-size:.72rem;color:#fecaca;margin-top:4px;min-height:18px;}
+  </style>
+</head>
+<body>
+<div class="login-backdrop" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-title">Login Admin KaiJuBlox</div>
+    <div class="login-sub">Masuk pakai user & password yang diset di server (.env). Default: admin / kaijublox123 (ganti sendiri!).</div>
+    <div class="form-group">
+      <label for="loginUser">Username</label>
+      <input id="loginUser" type="text" placeholder="admin">
+    </div>
+    <div class="form-group">
+      <label for="loginPass">Password</label>
+      <input id="loginPass" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-login" id="loginBtn">Masuk</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <header class="header">
+    <div class="header-main">
+      <div class="logo-badge"></div>
+      <div>
+        <div class="header-title">KaiJuBlox Admin</div>
+        <div class="header-sub">Panel buat atur stok akun Roblox</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span class="badge">API protected (Basic Auth)</span>
+      <button class="btn-ghost" onclick="location.href='/'">Lihat halaman toko</button>
+    </div>
+  </header>
+
+  <section class="layout">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Input / edit akun</div>
+          <div class="card-sub">Data langsung ke MongoDB Atlas. Akses edit / hapus cuma bisa lewat login admin.</div>
+        </div>
+      </div>
+
+      <form id="akunForm">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="judul">Judul akun <span>*</span></label>
+            <input id="judul" type="text" placeholder="Anime pass + Sim mix - LVL 120" required>
+            <div class="hint">Tampil di kartu utama.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="kode">Kode internal <span>*</span></label>
+            <input id="kode" type="text" placeholder="KBX-ANM-01" required>
+            <div class="hint">Dipakai buyer waktu order.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="harga">Harga (Rp) <span>*</span></label>
+            <input id="harga" type="number" min="0" step="1000" placeholder="150000" required>
+          </div>
+
+          <div class="form-group">
+            <label for="level">Level akun</label>
+            <input id="level" type="text" placeholder="Lv 120 / rebirth 3">
+          </div>
+
+          <div class="form-group">
+            <label for="robux">Robux</label>
+            <input id="robux" type="text" placeholder="Saldo robux kira-kira">
+          </div>
+
+          <div class="form-group">
+            <label for="kategori">Kategori utama</label>
+            <select id="kategori">
+              <option value="Umum">Umum</option>
+              <option value="Anime">Anime</option>
+              <option value="Simulator">Simulator</option>
+              <option value="Limited / Rare">Limited / Rare</option>
+              <option value="Mix">Mix</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="catatan">Catatan / detail gamepass</label>
+            <textarea id="catatan" placeholder="Gamepass anime fighting, pet rare simulator, pernah beli limited event halloween..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="tag1">Tag 1</label>
+            <input id="tag1" type="text" placeholder="Full gamepass">
+          </div>
+
+          <div class="form-group">
+            <label for="tag2">Tag 2</label>
+            <input id="tag2" type="text" placeholder="Cocok kolektor">
+          </div>
+
+          <div class="form-group">
+            <label for="tag3">Tag 3</label>
+            <input id="tag3" type="text" placeholder="Bisa nego dikit">
+          </div>
+
+          <div class="form-group">
+            <label for="ribbon">Ribbon / label</label>
+            <input id="ribbon" type="text" placeholder="Best pick / Hot / Promo">
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status akun</label>
+            <select id="status">
+              <option value="available">Available</option>
+              <option value="sold">Sold</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div class="pill-info">
+            <div class="pill-info-dot">i</div>
+            <span>Setelah simpan, cek tampilan di halaman utama. Pastikan ubah status ke "Sold" kalau akun sudah laku.</span>
+          </div>
+          <div class="btn-wrap">
+            <button type="button" class="btn-danger" id="resetBtn">Reset form</button>
+            <button type="submit" class="btn-save"><span>💾</span>Simpan perubahan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Daftar stok</div>
+          <div class="card-sub">Klik Edit buat ubah data, atau Set Sold kalau akun sudah kejual.</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header">
+          <div>Akun</div><div>Kode</div><div>Harga</div><div>Kategori</div><div>Status</div><div>Aksi</div>
+        </div>
+        <div class="table-body" id="tableBody"></div>
+      </div>
+      <div class="badge-counter" id="counterInfo">0 akun di database.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const API_BASE = '/api/accounts';
+  let editingId = null;
+  let authHeader = null;
+
+  function formatRupiah(angka){
+    const num = Number(angka);
+    if (Number.isNaN(num)) return angka;
+    return "Rp " + num.toLocaleString("id-ID");
+  }
+
+  function setAuthHeaderFromStorage(){
+    const saved = localStorage.getItem('kaijublox_admin_auth');
+    if (saved) authHeader = saved;
+  }
+
+  async function checkLogin(user, pass){
+    const base = btoa(user + ':' + pass);
+    const header = 'Basic ' + base;
+    try{
+      const res = await fetch('/api/admin/check', { headers:{ 'Authorization': header } });
+      if(!res.ok) return false;
+      authHeader = header;
+      localStorage.setItem('kaijublox_admin_auth', header);
+      return true;
+    }catch(e){
+      console.error(e);
+      return false;
+    }
+  }
+
+  function showLogin(){
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
+  function hideLogin(){
+    document.getElementById('loginOverlay').style.display = 'none';
+  }
+
+  async function fetchAccounts(){
+    const res = await fetch(API_BASE);
+    if(!res.ok) throw new Error('Error fetch');
+    return res.json();
+  }
+
+  function resetForm(){
+    document.getElementById('akunForm').reset();
+    editingId = null;
+  }
+
+  function fillForm(akun){
+    editingId = akun._id;
+    document.getElementById("judul").value = akun.judul || "";
+    document.getElementById("kode").value = akun.kode || "";
+    document.getElementById("harga").value = akun.harga || "";
+    document.getElementById("level").value = akun.level || "";
+    document.getElementById("robux").value = akun.robux || "";
+    document.getElementById("kategori").value = akun.kategori || "Umum";
+    document.getElementById("catatan").value = akun.catatan || "";
+    document.getElementById("tag1").value = akun.tag1 || "";
+    document.getElementById("tag2").value = akun.tag2 || "";
+    document.getElementById("tag3").value = akun.tag3 || "";
+    document.getElementById("ribbon").value = akun.ribbon || "";
+    document.getElementById("status").value = akun.status || "available";
+  }
+
+  async function renderTable(){
+    const body = document.getElementById("tableBody");
+    const counter = document.getElementById("counterInfo");
+    body.innerHTML = '<div class="empty">Loading...</div>';
+    try{
+      const list = await fetchAccounts();
+      body.innerHTML = "";
+      if(list.length === 0){
+        body.innerHTML = '<div class="empty"><strong>Belum ada stok disimpan.</strong>Isi form di kiri lalu simpan.</div>';
+      }else{
+        list.forEach(akun=>{
+          const row = document.createElement("div");
+          row.className = "row";
+          row.innerHTML = `
+            <div>
+              <strong>${akun.judul || "-"}</strong>
+              <small>${akun.catatan || ""}</small>
+            </div>
+            <div>${akun.kode || "-"}</div>
+            <div>${formatRupiah(akun.harga || 0)}</div>
+            <div><span class="tag">${akun.kategori || "Umum"}</span></div>
+            <div><span class="${akun.status === 'sold' ? 'status-sold' : 'status-ready'}">${akun.status === 'sold' ? 'Sold' : 'Ready'}</span></div>
+            <div class="row-actions">
+              <button class="btn-mini" onclick='onEdit(${JSON.stringify(akun)})'>Edit</button>
+              <button class="btn-mini" onclick="toggleStatus('${akun._id}','${akun.status}')">${akun.status === 'sold' ? 'Set Ready' : 'Set Sold'}</button>
+              <button class="btn-mini" onclick="hapusAkun('${akun._id}')">Hapus</button>
+            </div>
+          `;
+          body.appendChild(row);
+        });
+      }
+      counter.textContent = list.length + " akun di database.";
+    }catch(e){
+      console.error(e);
+      body.innerHTML = '<div class="empty">Gagal load data dari server. Cek server / koneksi.</div>';
+      counter.textContent = "0 akun (error fetch).";
+    }
+  }
+
+  function onEdit(akun){
+    fillForm(akun);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  async function toggleStatus(id,current){
+    if(!authHeader){ alert("Belum login admin."); showLogin(); return; }
+    const next = current === 'sold' ? 'available' : 'sold';
+    try{
+      await fetch(`${API_BASE}/${id}/status`,{
+        method:'PATCH',
+        headers:{ 'Content-Type':'application/json','Authorization':authHeader },
+        body:JSON.stringify({status:next})
+      });
+      renderTable();
+    }catch(e){
+      console.error(e);
+      alert("Gagal update status.");
+    }
+  }
+
+  async function hapusAkun(id){
+    if(!authHeader){ alert("Belum login admin."); showLogin(); return; }
+    if(!confirm("Yakin mau hapus akun ini dari stok?")) return;
+    try{
+      await fetch(`${API_BASE}/${id}`,{method:'DELETE',headers:{'Authorization':authHeader}});
+      renderTable();
+    }catch(e){
+      console.error(e);
+      alert("Gagal hapus akun.");
+    }
+  }
+
+  document.getElementById("akunForm").addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    if(!authHeader){ alert("Belum login admin."); showLogin(); return; }
+
+    const judul = document.getElementById("judul").value.trim();
+    const kode = document.getElementById("kode").value.trim();
+    const harga = document.getElementById("harga").value.trim();
+    if(!judul || !kode || !harga){
+      alert("Minimal isi Judul, Kode, dan Harga.");
+      return;
+    }
+
+    const payload = {
+      judul,
+      kode,
+      harga:Number(harga),
+      level:document.getElementById("level").value.trim(),
+      robux:document.getElementById("robux").value.trim(),
+      kategori:document.getElementById("kategori").value,
+      catatan:document.getElementById("catatan").value.trim(),
+      tag1:document.getElementById("tag1").value.trim(),
+      tag2:document.getElementById("tag2").value.trim(),
+      tag3:document.getElementById("tag3").value.trim(),
+      ribbon:document.getElementById("ribbon").value.trim(),
+      status:document.getElementById("status").value
+    };
+
+    try{
+      if(editingId){
+        await fetch(`${API_BASE}/${editingId}`,{
+          method:'PUT',
+          headers:{'Content-Type':'application/json','Authorization':authHeader},
+          body:JSON.stringify(payload)
+        });
+      }else{
+        await fetch(API_BASE,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':authHeader},
+          body:JSON.stringify(payload)
+        });
+      }
+      resetForm();
+      renderTable();
+      alert("Stok tersimpan ke database.");
+    }catch(e){
+      console.error(e);
+      alert("Gagal simpan ke server.");
+    }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click",()=>{
+    resetForm();
+  });
+
+  document.getElementById("loginBtn").addEventListener("click",async ()=>{
+    const user = document.getElementById("loginUser").value || "admin";
+    const pass = document.getElementById("loginPass").value || "";
+    const err = document.getElementById("loginError");
+    err.textContent = "";
+    if(!pass){
+      err.textContent = "Password tidak boleh kosong.";
+      return;
+    }
+    const ok = await checkLogin(user,pass);
+    if(ok){
+      hideLogin();
+      renderTable();
+    }else{
+      err.textContent = "Login gagal. Cek user / password di .env server.";
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    setAuthHeaderFromStorage();
+    if(authHeader){
+      hideLogin();
+      renderTable();
+    }else{
+      showLogin();
+    }
+  });
+</script>
+</body>
+</html>
